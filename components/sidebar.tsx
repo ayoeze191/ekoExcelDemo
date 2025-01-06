@@ -1,8 +1,24 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { BookOpen, Users, GraduationCap, ClipboardList, Calendar, GripHorizontal, Mail, FileText, BarChart2, FolderOpen, Building2, Users2, Layout, Boxes, LogOut } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  BookOpen,
+  Users,
+  GraduationCap,
+  ClipboardList,
+  Calendar,
+  GripHorizontal,
+  Mail,
+  FileText,
+  BarChart2,
+  FolderOpen,
+  Building2,
+  Users2,
+  Layout,
+  Boxes,
+  LogOut,
+} from "lucide-react";
 
 export function Sidebar() {
   return (
@@ -16,22 +32,22 @@ export function Sidebar() {
       <ScrollArea className="flex-1 px-3">
         <div className="space-y-1 py-3">
           {[
-            { icon: ClipboardList, label: 'Plans', href: '/plans' },
-            { icon: Users, label: 'Attendance', href: '/attendance' },
-            { icon: GraduationCap, label: 'Classes', href: '/classes' },
-            { icon: ClipboardList, label: 'Classwork' },
-            { icon: Calendar, label: 'Events' },
-            { icon: GripHorizontal, label: 'Grades' },
-            { icon: BookOpen, label: 'Lesson Banks' },
-            { icon: Mail, label: 'Messages' },
-            { icon: FileText, label: 'Notes & To Do' },
-            { icon: BarChart2, label: 'Reporting' },
-            { icon: FolderOpen, label: 'Resources' },
-            { icon: Building2, label: 'School Years' },
-            { icon: Users2, label: 'Seating Charts' },
-            { icon: Users, label: 'Students' },
-            { icon: Layout, label: 'Templates' },
-            { icon: Boxes, label: 'Units' },
+            { icon: ClipboardList, label: "Plans", href: "/plans" },
+            { icon: Users, label: "Attendance", href: "/attendance" },
+            { icon: GraduationCap, label: "Classes", href: "/classes" },
+            { icon: ClipboardList, label: "Classwork" },
+            // { icon: Calendar, label: 'Events' },
+            // { icon: GripHorizontal, label: 'Grades' },
+            // { icon: BookOpen, label: 'Lesson Banks' },
+            // { icon: Mail, label: 'Messages' },
+            // { icon: FileText, label: 'Notes & To Do' },
+            // { icon: BarChart2, label: 'Reporting' },
+            // { icon: FolderOpen, label: 'Resources' },
+            // { icon: Building2, label: 'School Years' },
+            // { icon: Users2, label: 'Seating Charts' },
+            // { icon: Users, label: 'Students' },
+            // { icon: Layout, label: 'Templates' },
+            // { icon: Boxes, label: 'Units' },
           ].map((item) => (
             <Button
               key={item.label}
@@ -61,6 +77,5 @@ export function Sidebar() {
         </Button>
       </div>
     </div>
-  )
+  );
 }
-
