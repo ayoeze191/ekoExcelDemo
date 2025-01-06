@@ -1,17 +1,36 @@
-'use client'
+"use client";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Check, X } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Check, X } from "lucide-react";
 
 const students = [
   { id: 1, name: "Alice Smith", status: "present", lateDays: 2, absentDays: 1 },
   { id: 2, name: "Bob Johnson", status: "absent", lateDays: 1, absentDays: 3 },
   { id: 3, name: "Charlie Brown", status: "late", lateDays: 4, absentDays: 0 },
-  { id: 4, name: "Diana Wilson", status: "present", lateDays: 0, absentDays: 2 },
-  { id: 5, name: "Edward Davis", status: "present", lateDays: 1, absentDays: 1 },
-]
+  {
+    id: 4,
+    name: "Diana Wilson",
+    status: "present",
+    lateDays: 0,
+    absentDays: 2,
+  },
+  {
+    id: 5,
+    name: "Edward Davis",
+    status: "present",
+    lateDays: 1,
+    absentDays: 1,
+  },
+];
 
 export function AttendanceTable() {
   return (
@@ -40,7 +59,8 @@ export function AttendanceTable() {
                       : "destructive"
                   }
                 >
-                  {student.status.charAt(0).toUpperCase() + student.status.slice(1)}
+                  {student.status.charAt(0).toUpperCase() +
+                    student.status.slice(1)}
                 </Badge>
               </TableCell>
               <TableCell className="text-right">{student.lateDays}</TableCell>
@@ -60,6 +80,5 @@ export function AttendanceTable() {
         </TableBody>
       </Table>
     </div>
-  )
+  );
 }
-
