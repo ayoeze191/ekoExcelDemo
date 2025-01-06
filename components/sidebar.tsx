@@ -7,16 +7,6 @@ import {
   Users,
   GraduationCap,
   ClipboardList,
-  Calendar,
-  GripHorizontal,
-  Mail,
-  FileText,
-  BarChart2,
-  FolderOpen,
-  Building2,
-  Users2,
-  Layout,
-  Boxes,
   LogOut,
 } from "lucide-react";
 
@@ -24,10 +14,14 @@ export function Sidebar() {
   return (
     <div className="hidden lg:flex h-screen w-64 flex-col bg-white dark:bg-gray-800 border-r">
       <div className="p-6 flex items-center gap-3 border-b">
-        <div className="bg-primary/10 p-2 rounded-lg">
+        {/* <div className="bg-primary/10 p-2 rounded-lg">
           <BookOpen className="h-6 w-6 text-primary" />
         </div>
-        <span className="text-xl font-semibold">EkoExcel</span>
+        <span className="text-xl font-semibold">EkoExcel</span> */}
+        <div className="  flex flex-col items-center gap-1 w-full">
+          <img src="/ubc.webp" alt="" className="w-10 h-10 cursor-pointer" />
+          <span className="text-xl font-semibold">EkoExcel</span>
+        </div>
       </div>
       <ScrollArea className="flex-1 px-3">
         <div className="space-y-1 py-3">
