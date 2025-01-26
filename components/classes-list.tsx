@@ -1,10 +1,20 @@
-'use client'
+"use client";
 
-import { Card } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { MoreHorizontal, Users } from 'lucide-react'
-
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { MoreHorizontal, Users } from "lucide-react";
+import { axiosInstance } from "@/app/axios/axios";
+import { useEffect, useState } from "react";
+const daysOfWeek = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 const classes = [
   {
     id: 1,
@@ -42,19 +52,40 @@ const classes = [
     schedule: "Tue, Thu",
     time: "2:00 PM - 3:00 PM",
   },
-]
+];
 
 export function ClassesList() {
+  const [less, setLessons] = useState([]);
+  const getLessons = async () => {
+    const response = await axiosInstance.get("/schools/lessons");
+    const redifinedLessons = response.data.data.map((res) => {
+      const date = new Date(res.date);
+      const date_value = date.getDate();
+      const day = date.getDay();
+      return {
+        ...res,
+        date_value: date_value,
+        day: day,
+      };
+    });
+    setLessons(redifinedLessons);
+  };
+  useEffect(() => {
+    const allLessons = async () => {
+      await getLessons();
+    };
+    allLessons();
+  }, []);
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {classes.map((classItem) => (
-        <Card key={classItem.id} className="p-6">
+      {less.map((classItem) => (
+        <Card key={classItem._id} className="p-6">
           <div className="flex items-start justify-between">
             <div className="space-y-1">
               <h3 className="font-semibold">{classItem.name}</h3>
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{classItem.grade}</Badge>
-                <Badge variant="outline">Section {classItem.section}</Badge>
+                <Badge variant="secondary">Grade 6</Badge>
+                <Badge variant="outline">Section B</Badge>
               </div>
             </div>
             <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -64,20 +95,27 @@ export function ClassesList() {
           <div className="mt-4 space-y-2">
             <div className="flex items-center text-sm text-muted-foreground">
               <Users className="mr-2 h-4 w-4" />
-              {classItem.students} Students
+              28 Students
             </div>
             <div className="text-sm">
-              <div>{classItem.schedule}</div>
-              <div className="text-muted-foreground">{classItem.time}</div>
+              <div>
+                {daysOfWeek[classItem.day]} {classItem.date_value}
+                {/* {new Date(class
+                Item.date).getDate()} */}
+              </div>
+              {/* <div className="text-muted-foreground">{classItem.date}</div> */}
             </div>
           </div>
           <div className="mt-4 flex gap-2">
-            <Button variant="outline" className="w-full">View Details</Button>
-            <Button variant="outline" className="w-full">Take Attendance</Button>
+            <Button variant="outline" className="w-full">
+              View Class Lesson
+            </Button>
+            <Button variant="outline" className="w-full">
+              Take Attendance
+            </Button>
           </div>
         </Card>
       ))}
     </div>
-  )
+  );
 }
-
