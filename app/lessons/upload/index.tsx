@@ -38,109 +38,89 @@ import Image from "next/image";
 import { axiosInstance } from "@/app/axios/axios";
 import { toast, Toaster } from "sonner";
 
-// Example schools data
-// const schools = [
-//   { value: "harvard", label: "Harvard University" },
-//   { value: "mit", label: "Massachusetts Institute of Technology" },
-//   { value: "stanford", label: "Stanford University" },
-//   { value: "yale", label: "Yale University" },
-//   { value: "princeton", label: "Princeton University" },
-// ];
+interface School {
+  name: string;
+  _id: string;
+  uniqueNumber: string;
+}
 
-// Subject options
-const subjects = [
-  { value: "mathematics", label: "Mathematics" },
-  { value: "physics", label: "Physics" },
-  { value: "chemistry", label: "Chemistry" },
-  { value: "biology", label: "Biology" },
-  { value: "computer-science", label: "Computer Science" },
-  { value: "literature", label: "Literature" },
-  { value: "history", label: "History" },
-  { value: "economics", label: "Economics" },
-];
+interface Subject {
+  name: string;
+  _id: string;
+}
 
-export default function PdfUploadForm() {
+const PdfUploadForm = () => {
   const [open, setOpen] = React.useState(false);
   const [selectedSchool, setSelectedSchool] = React.useState("");
   const [selectedSubject, setSelectedSubject] = React.useState("");
-  const [selectedFile, setSelectedFile] = React.useState<
-    File | null | string | { name: string }
-  >(null);
+  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [selectedTime, setSelectedTime] = React.useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [allschools, setSchool] = React.useState<
-    [{ name: string; _id: string; uniqueNumber: string }] | []
-  >([]);
-  const [allsubjects, setAllSubjects] = React.useState<
-    [{ name: string; _id: string }] | []
-  >([]);
+  const [allschools, setSchool] = React.useState<School[]>([]);
+  const [allsubjects, setAllSubjects] = React.useState<Subject[]>([]);
   const [loading, setLoading] = React.useState(false);
+
   const allSchools = async () => {
-    const response = await axiosInstance.get("/schools");
-    setSchool(response.data.data);
+    try {
+      const response = await axiosInstance.get("/schools");
+      setSchool(response.data.data);
+    } catch (error) {
+      toast.error("Failed to fetch schools");
+    }
   };
+
+  const allCourses = async () => {
+    try {
+      const response = await axiosInstance.get("/course");
+      setAllSubjects(response.data.data);
+    } catch (error) {
+      toast.error("Failed to fetch courses");
+    }
+  };
+
   const andleUpload = async () => {
     setLoading(true);
-    const formData = new FormData();
-    if (selectedFile) {
-      formData.append("lesson", selectedFile);
-    }
-    formData.append("school", selectedSchool);
-    formData.append("course", selectedSubject);
-    formData.append("date", selectedTime || new Date().toISOString());
+    try {
+      const formData = new FormData();
+      if (selectedFile) formData.append("lesson", selectedFile);
+      formData.append("school", selectedSchool);
+      formData.append("course", selectedSubject);
+      formData.append("date", selectedTime || new Date().toISOString());
 
-    const response = await axios.post(
-      // "http://localhost:3000/schools/lessons/upload",
-      "https://dark-rickie-ezekielsteam-b13c1bb2.koyeb.app/lessons/upload",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    setLoading(false);
-    setSelectedSchool("");
-    setSelectedSubject("");
-    setSelectedTime("");
-    setSelectedFile("");
-    toast.success("Successfully uploaded Pdf");
-    setLoading(false);
+      await axios.post(
+        "https://dark-rickie-ezekielsteam-b13c1bb2.koyeb.app/lessons/upload",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      toast.success("Successfully uploaded PDF");
+      setSelectedSchool("");
+      setSelectedSubject("");
+      setSelectedTime("");
+      setSelectedFile(null);
+    } catch (error) {
+      toast.error("Failed to upload PDF");
+    } finally {
+      setLoading(false);
+    }
   };
-  const allCourses = async () => {
-    const response = await axiosInstance.get("/course");
-    setAllSubjects(response.data.data);
-  };
+
   React.useEffect(() => {
-    const getall = async () => {
-      await allSchools();
-      await allCourses();
-    };
-    getall();
+    allSchools();
+    allCourses();
   }, []);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && file.type === "application/pdf") {
+    if (file?.type === "application/pdf") {
       setSelectedFile(file);
     } else {
-      alert("Please upload a PDF file");
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      toast.error("Please upload a PDF file");
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission here
-    console.log({
-      school: selectedSchool,
-      subject: selectedSubject,
-      file: selectedFile,
-      time: selectedTime,
-    });
-  };
-  console.log(selectedSchool);
   return (
     <div className="mx-auto max-w-md p-4">
       <Toaster />
@@ -176,14 +156,14 @@ export default function PdfUploadForm() {
                     className="w-full justify-between"
                   >
                     {selectedSchool
-                      ? allschools!.find(
-                          (school) => school!._id === selectedSchool
-                        )!.name!
+                      ? allschools.find(
+                          (school) => school._id === selectedSchool
+                        )?.name ?? "Select school..."
                       : "Select school..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
+                <PopoverContent className="w-[200px] p-0">
                   <Command>
                     <CommandInput placeholder="Search school..." />
                     <CommandList>
@@ -191,21 +171,13 @@ export default function PdfUploadForm() {
                       <CommandGroup>
                         {allschools.map((school) => (
                           <CommandItem
-                            key={school.uniqueNumber}
-                            value={school._id}
-                            onSelect={(currentValue) => {
-                              setSelectedSchool(
-                                currentValue === selectedSchool
-                                  ? ""
-                                  : currentValue
-                              );
-                              setOpen(false);
-                            }}
+                            key={school._id}
+                            onSelect={() => setSelectedSchool(school._id)}
                           >
                             <Check
                               className={cn(
                                 "mr-2 h-4 w-4",
-                                selectedSchool == school._id
+                                selectedSchool === school._id
                                   ? "opacity-100"
                                   : "opacity-0"
                               )}
@@ -228,7 +200,7 @@ export default function PdfUploadForm() {
                 onValueChange={setSelectedSubject}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select subject..." />
+                  <SelectValue placeholder="Select a subject..." />
                 </SelectTrigger>
                 <SelectContent>
                   {allsubjects.map((subject) => (
@@ -240,54 +212,37 @@ export default function PdfUploadForm() {
               </Select>
             </div>
 
-            {/* PDF Upload */}
+            {/* Date Selection */}
             <div className="space-y-2">
-              <Label htmlFor="pdf">PDF Document</Label>
-              <div
-                className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <Upload className="h-8 w-8 mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  {selectedFile
-                    ? selectedFile.name
-                    : "Click to upload or drag and drop"}
-                </p>
-                <input
-                  ref={fileInputRef}
-                  id="pdf"
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-            </div>
-
-            {/* Time Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="time">Lesson Time</Label>
+              <Label>Lesson Date</Label>
               <Input
-                id="time"
                 type="datetime-local"
                 value={selectedTime}
                 onChange={(e) => setSelectedTime(e.target.value)}
-                className="w-full"
-                required
               />
             </div>
 
-            {/* Submit Button */}
-            <Button
-              onClick={andleUpload}
-              className="w-full"
-              // disabled={loading}
-            >
-              {loading ? "uploading" : "Schedule Lesson"}
+            {/* File Upload */}
+            <div className="space-y-2">
+              <Label>Upload File</Label>
+              <Input
+                ref={fileInputRef}
+                type="file"
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
+            </div>
+
+            {/* Submit */}
+            <Button className="w-full" onClick={andleUpload} disabled={loading}>
+              {loading ? "Uploading..." : "Upload"}
+              <Upload className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </CardContent>
       </Card>
     </div>
   );
-}
+};
+
+export default PdfUploadForm;
