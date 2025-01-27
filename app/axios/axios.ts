@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Create an Axios instance with default configurations
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3000", // Base URL for all requests
+  // baseURL: "http://localhost:3000", // Base URL for all requests
+  baseURL: "https://dark-rickie-ezekielsteam-b13c1bb2.koyeb.app/",
+
   headers: {
     "Content-Type": "application/json", // Default headers
   },

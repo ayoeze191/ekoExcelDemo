@@ -82,7 +82,8 @@ export default function PdfUploadForm() {
     formData.append("date", selectedTime || new Date().toISOString());
 
     const response = await axios.post(
-      "http://localhost:3000/schools/lessons/upload",
+      // "http://localhost:3000/schools/lessons/upload",
+      "https://dark-rickie-ezekielsteam-b13c1bb2.koyeb.app/lessons/upload",
       formData,
       {
         headers: {

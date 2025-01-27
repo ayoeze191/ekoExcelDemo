@@ -15,6 +15,20 @@ const daysOfWeek = [
   "Friday",
   "Saturday",
 ];
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 const classes = [
   {
     id: 1,
@@ -61,11 +75,16 @@ export function ClassesList() {
     const redifinedLessons = response.data.data.map((res) => {
       const date = new Date(res.date);
       const date_value = date.getDate();
+      const month = date.getMonth();
+      const year = date.getFullYear();
+
       const day = date.getDay();
       return {
         ...res,
         date_value: date_value,
         day: day,
+        month,
+        year,
       };
     });
     setLessons(redifinedLessons);
@@ -99,7 +118,8 @@ export function ClassesList() {
             </div>
             <div className="text-sm">
               <div>
-                {daysOfWeek[classItem.day]} {classItem.date_value}
+                {daysOfWeek[classItem.day]} {classItem.date_value}{" "}
+                {months[classItem.month]} {classItem.year}
                 {/* {new Date(class
                 Item.date).getDate()} */}
               </div>
@@ -107,9 +127,11 @@ export function ClassesList() {
             </div>
           </div>
           <div className="mt-4 flex gap-2">
-            <Button variant="outline" className="w-full">
-              View Class Lesson
-            </Button>
+            <a href={classItem.pdf}>
+              <Button variant="outline" className="w-full">
+                View Class Lesson
+              </Button>
+            </a>
             <Button variant="outline" className="w-full">
               Take Attendance
             </Button>
