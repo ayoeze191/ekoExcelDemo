@@ -63,11 +63,17 @@ export default function PdfUploadForm() {
   const [open, setOpen] = React.useState(false);
   const [selectedSchool, setSelectedSchool] = React.useState("");
   const [selectedSubject, setSelectedSubject] = React.useState("");
-  const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = React.useState<
+    File | null | string | { name: string }
+  >(null);
   const [selectedTime, setSelectedTime] = React.useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [allschools, setSchool] = React.useState([]);
-  const [allsubjects, setAllSubjects] = React.useState([]);
+  const [allschools, setSchool] = React.useState<
+    [{ name: string; _id: string; uniqueNumber: string }] | []
+  >([]);
+  const [allsubjects, setAllSubjects] = React.useState<
+    [{ name: string; _id: string }] | []
+  >([]);
   const [loading, setLoading] = React.useState(false);
   const allSchools = async () => {
     const response = await axiosInstance.get("/schools");
@@ -76,7 +82,9 @@ export default function PdfUploadForm() {
   const andleUpload = async () => {
     setLoading(true);
     const formData = new FormData();
-    formData.append("lesson", selectedFile);
+    if (selectedFile) {
+      formData.append("lesson", selectedFile);
+    }
     formData.append("school", selectedSchool);
     formData.append("course", selectedSubject);
     formData.append("date", selectedTime || new Date().toISOString());
@@ -168,9 +176,9 @@ export default function PdfUploadForm() {
                     className="w-full justify-between"
                   >
                     {selectedSchool
-                      ? allschools.find(
-                          (school) => school._id === selectedSchool
-                        ).name
+                      ? allschools!.find(
+                          (school) => school!._id === selectedSchool
+                        )!.name!
                       : "Select school..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>

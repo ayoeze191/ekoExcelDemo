@@ -69,10 +69,23 @@ const classes = [
 ];
 
 export function ClassesList() {
-  const [less, setLessons] = useState([]);
+  const [less, setLessons] = useState<
+    | [
+        {
+          pdf: string;
+          _id: string;
+          name: string;
+          day: number;
+          date_value: string;
+          year: string;
+          month: number;
+        }
+      ]
+    | []
+  >([]);
   const getLessons = async () => {
     const response = await axiosInstance.get("/schools/lessons");
-    const redifinedLessons = response.data.data.map((res) => {
+    const redifinedLessons = response.data.data.map((res: { date: Date }) => {
       const date = new Date(res.date);
       const date_value = date.getDate();
       const month = date.getMonth();
