@@ -24,7 +24,9 @@ export function SchoolSelector({
   onSelectSchool,
   disabled = false,
 }: SchoolSelectorProps) {
-  const [allschools, setSchool] = useState([]);
+  const [allschools, setSchool] = useState<
+    [{ uniqueNumber: string; _id: string; name: string }] | []
+  >([]);
   const allSchools = async () => {
     const response = await axiosInstance.get("/schools");
     setSchool(response.data.data);
